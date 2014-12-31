@@ -1,12 +1,8 @@
 package me.modmuss50.guiDesigner;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import me.modmuss50.network.NetworkCore;
-import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
-import sun.security.krb5.internal.crypto.Des;
 
 import java.util.List;
 
@@ -32,9 +28,9 @@ public class CommandGui implements ICommand {
         sender.addChatMessage(new ChatComponentText("Opening the gui Designer!"));
     }
 
-        @Override
-        public boolean canCommandSenderUseCommand(ICommandSender p_71519_1_) {
-            return true;
+    @Override
+    public boolean canCommandSenderUseCommand(ICommandSender p_71519_1_) {
+        return true;
     }
 
     @Override

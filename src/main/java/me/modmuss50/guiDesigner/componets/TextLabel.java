@@ -3,7 +3,7 @@ package me.modmuss50.guiDesigner.componets;
 /**
  * Created by Mark on 30/12/2014.
  */
-public class TextLabel extends Componet{
+public class TextLabel extends Componet {
     String text;
 
     public TextLabel(int x, int y, String name, String text, int height) {
