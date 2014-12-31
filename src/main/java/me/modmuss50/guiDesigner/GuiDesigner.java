@@ -1,5 +1,6 @@
 package me.modmuss50.guiDesigner;
 
+import me.modmuss50.guiDesigner.componets.CompButton;
 import me.modmuss50.guiDesigner.componets.Componet;
 import me.modmuss50.guiDesigner.componets.TextLabel;
 import net.minecraft.client.gui.GuiButton;
@@ -16,8 +17,9 @@ import java.util.ArrayList;
 
 public class GuiDesigner extends GuiScreen {
 
-    private static final ResourceLocation baseTexture = new ResourceLocation("network:textures/gui/base.png");
-    private static final ResourceLocation baseTextureSmall = new ResourceLocation("network:textures/gui/baseSmall.png");
+    private static final ResourceLocation baseTexture = new ResourceLocation("guidesigner:textures/gui/base.png");
+    private static final ResourceLocation baseTextureSmall = new ResourceLocation("guidesigner:textures/gui/baseSmall.png");
+    private static final ResourceLocation hotBar = new ResourceLocation("guidesigner:textures/gui/hotbar.png");
 
     /**
      * The X size of the inventory window in pixels.
@@ -34,7 +36,8 @@ public class GuiDesigner extends GuiScreen {
 
     GuiTextField nameFeild;
 
-    GuiTextField textLableBox;
+    GuiTextField textLabelBox;
+    GuiTextField buttonLableBox;
 
     boolean itemSelectionBox = false;
 
@@ -47,8 +50,9 @@ public class GuiDesigner extends GuiScreen {
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
         buttonList.clear();
-        buttonList.add(new GuiButton(0, -ySize / 2 + 150, l + ySize - 24, 20, 20, "+"));
-        buttonList.add(new GuiButton(1, -ySize / 2 + 128, l + ySize - 24, 20, 20, "-"));
+        buttonList.add(new GuiButton(0, -ySize / 2 + 150, l + ySize - 24, 20, 20, "-"));
+        buttonList.add(new GuiButton(1, (this.width - ySize / 2) - 278, this.height - 22, 20, 20, "ABC"));
+        buttonList.add(new GuiButton(2, (this.width - ySize / 2) - 278 + 22, this.height - 22, 20, 20, "B"));
     }
 
     @Override
@@ -60,6 +64,11 @@ public class GuiDesigner extends GuiScreen {
         this.drawTexturedModalRect(-ySize / 2, l, 0, 0, this.xSize, this.ySize);
 
         this.drawTexturedModalRect(this.width - ySize / 2 - 50, l, 0, 0, this.xSize, this.ySize);
+
+        {//Hot bar
+            RenderManager.instance.renderEngine.bindTexture(hotBar);
+            this.drawTexturedModalRect((this.width - ySize / 2) - 280, this.height - 25, 0, 0, 256, 256);
+        }
 
 
         this.fontRendererObj.drawString("Components", -ySize / 2 + 100, l + 5, Color.gray.getRGB());
@@ -89,17 +98,33 @@ public class GuiDesigner extends GuiScreen {
             if (componet instanceof TextLabel) {
                 TextLabel textLabel = (TextLabel) componet;
                 this.fontRendererObj.drawString("Text: ", this.width - ySize / 2 + 10 - 50, l + 35, Color.white.getRGB());
-                if (textLableBox == null) {
-                    textLableBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                if (textLabelBox == null) {
+                    textLabelBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
                 }
 
-                if (textLableBox.getText().equals("ERROR")) {
-                    textLableBox.setText(textLabel.getText());
+                if (textLabelBox.getText().equals("ERROR")) {
+                    textLabelBox.setText(textLabel.getText());
                 }
-                textLableBox.drawTextBox();
-                textLableBox.setTextColor(Color.white.getRGB());
+                textLabelBox.drawTextBox();
+                textLabelBox.setTextColor(Color.white.getRGB());
             } else {
-                textLableBox = null;
+                textLabelBox = null;
+            }
+
+            if (componet instanceof CompButton) {
+                CompButton compButton = (CompButton) componet;
+                this.fontRendererObj.drawString("Text: ", this.width - ySize / 2 + 10 - 50, l + 35, Color.white.getRGB());
+                if (buttonLableBox == null) {
+                    buttonLableBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                }
+
+                if (buttonLableBox.getText().equals("ERROR")) {
+                    buttonLableBox.setText(compButton.getText());
+                }
+                buttonLableBox.drawTextBox();
+                buttonLableBox.setTextColor(Color.white.getRGB());
+            } else {
+                buttonLableBox = null;
             }
         } else {
             nameFeild = null;
@@ -113,6 +138,12 @@ public class GuiDesigner extends GuiScreen {
             if (componet instanceof TextLabel) {
                 TextLabel textLabel = (TextLabel) componet;
                 this.fontRendererObj.drawString(textLabel.getText(), k + textLabel.getX(), l + textLabel.getY(), Color.gray.getRGB());
+            }
+
+            if (componet instanceof CompButton) {
+                CompButton button = (CompButton) componet;
+                GuiButton button1 = new GuiButton(99, k + button.getX(), l + button.getY(), button.getWidth(), button.getHeight(), button.getText());
+                button1.drawButton(this.mc, k + button.getX(), l + button.getY());
             }
 
 
@@ -147,13 +178,15 @@ public class GuiDesigner extends GuiScreen {
     public void actionPerformed(GuiButton button) {
         super.actionPerformed(button);
         if (!itemSelectionBox) {
-            if (button.id == 0) {
-                componets.add(new TextLabel(10, 10, "Label " + Integer.toString(componets.size() + 1), "Text goes here", 10));
-                //itemSelectionBox = true;
-            }
-            if (button.id == 1 && !componets.isEmpty() && selectedComponet < componets.size() && selectedComponet != -1) {
+            if (button.id == 0 && !componets.isEmpty() && selectedComponet < componets.size() && selectedComponet != -1) {
                 componets.remove(selectedComponet);
                 selectedComponet = -1;
+            }
+            if (button.id == 1) {
+                componets.add(new TextLabel(10, 10, "Label " + Integer.toString(componets.size() + 1), "Text goes here", 10));
+            }
+            if (button.id == 2) {
+                componets.add(new CompButton(10, 10, "Button " + Integer.toString(componets.size() + 1), "Text goes here", 20));
             }
         }
 
@@ -177,8 +210,11 @@ public class GuiDesigner extends GuiScreen {
             if (nameFeild != null) {
                 nameFeild.mouseClicked(x, y, par3);
             }
-            if (textLableBox != null) {
-                textLableBox.mouseClicked(x, y, par3);
+            if (textLabelBox != null) {
+                textLabelBox.mouseClicked(x, y, par3);
+            }
+            if (buttonLableBox != null) {
+                buttonLableBox.mouseClicked(x, y, par3);
             }
         }
 
@@ -205,10 +241,16 @@ public class GuiDesigner extends GuiScreen {
                 componet = componets.get(selectedComponet);
             }
             if (componet instanceof TextLabel) {
-                if (textLableBox == null) {
-                    textLableBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                if (textLabelBox == null) {
+                    textLabelBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
                 }
-                textLableBox.setText("ERROR");
+                textLabelBox.setText("ERROR");
+            }
+            if (componet instanceof CompButton) {
+                if (buttonLableBox == null) {
+                    buttonLableBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                }
+                buttonLableBox.setText("ERROR");
             }
         } else {
             selectedComponet = -1;
@@ -253,7 +295,7 @@ public class GuiDesigner extends GuiScreen {
             movingComponet = null;
         }
 
-        if(hasScrollBar()){
+        if (hasScrollBar()) {
             //TODO make this scroll :)
         }
     }
@@ -266,12 +308,20 @@ public class GuiDesigner extends GuiScreen {
                 if (nameFeild.getText().length() != 0) {
                     componets.get(selectedComponet).setName(nameFeild.getText());
                 }
-            } else if (textLableBox != null && textLableBox.textboxKeyTyped(par1, par2)) {
-                if (textLableBox.getText().length() != 0) {
+            } else if (textLabelBox != null && textLabelBox.textboxKeyTyped(par1, par2)) {
+                if (textLabelBox.getText().length() != 0) {
                     Componet componet = componets.get(selectedComponet);
                     if (componet instanceof TextLabel) {
-                        ((TextLabel) componet).setText(textLableBox.getText());
-                        componet.setWidth(textLableBox.getText().length() * 5);
+                        ((TextLabel) componet).setText(textLabelBox.getText());
+                        componet.setWidth(textLabelBox.getText().length() * 5);
+                    }
+                }
+            } else if (buttonLableBox != null && buttonLableBox.textboxKeyTyped(par1, par2)) {
+                if (buttonLableBox.getText().length() != 0) {
+                    Componet componet = componets.get(selectedComponet);
+                    if (componet instanceof CompButton) {
+                        ((CompButton) componet).setText(buttonLableBox.getText());
+                        componet.setWidth(buttonLableBox.getText().length() * 6);
                     }
                 }
             } else {
