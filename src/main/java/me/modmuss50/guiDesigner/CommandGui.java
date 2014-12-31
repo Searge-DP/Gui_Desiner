@@ -24,7 +24,8 @@ public class CommandGui implements ICommand {
 
     @Override
     public void processCommand(ICommandSender sender, String[] strings) {
-        Designer.network.sendToAll(new PacketOpen());
+        System.out.println(strings[0]);
+        Designer.network.sendToAll(new PacketOpen(strings[0]));
         sender.addChatMessage(new ChatComponentText("Opening the gui Designer!"));
     }
 

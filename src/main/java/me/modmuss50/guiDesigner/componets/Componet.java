@@ -1,9 +1,11 @@
 package me.modmuss50.guiDesigner.componets;
 
+import java.io.Serializable;
+
 /**
  * Created by Mark on 30/12/2014.
  */
-public class Componet {
+public class Componet implements Serializable {
 
     int x;
 
