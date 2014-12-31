@@ -331,7 +331,9 @@ public class GuiDesigner extends GuiScreen implements Serializable {
         nameFeild = null;
         textLabelBox = null;
         buttonLableBox = null;
-        Saver saver = new Saver(this, guiTitleBox.getText());
+        String name = guiTitleBox.getText();
+        guiTitleBox = null;
+        Saver saver = new Saver(this, name);
         saver.save();
         super.onGuiClosed();
     }

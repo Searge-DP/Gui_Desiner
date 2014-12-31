@@ -21,7 +21,7 @@ public class Loader {
     }
 
     public GuiDesigner load(){
-        if(file.getName().equals("NULL")){
+        if(file.getName().equals("New gui")){
             return null;
         }
         if(!folder.exists()){
