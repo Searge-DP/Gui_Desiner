@@ -12,9 +12,9 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-import java.io.Serializable;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GuiDesigner extends GuiScreen implements Serializable {
@@ -85,6 +85,7 @@ public class GuiDesigner extends GuiScreen implements Serializable {
         int l = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
         this.drawTexturedModalRect(-ySize / 2, l, 0, 0, this.xSize, this.ySize);
+        if(selectedComponet != -1)
         this.drawTexturedModalRect(this.width - ySize / 2 - 50, l, 0, 0, this.xSize, this.ySize);
         {//Hot bar
             RenderManager.instance.renderEngine.bindTexture(hotBar);
@@ -93,9 +94,11 @@ public class GuiDesigner extends GuiScreen implements Serializable {
         }
 
         this.fontRendererObj.drawString("Components", -ySize / 2 + 100, l + 5, Color.gray.getRGB());
+        if(selectedComponet != -1)
         this.fontRendererObj.drawString("Settings", this.width - ySize / 2 + 10 - 15, l + 5, Color.gray.getRGB());
 
         this.drawColourOnScreen(0, 0, 0, 255, -ySize / 2 + 90, l + 25, 75, 110, 0);
+        if(selectedComponet != -1)
         this.drawColourOnScreen(0, 0, 0, 255, this.width - ySize / 2 - 45, l + 15, 125, 145, 0);
 
         if (!componets.isEmpty() && selectedComponet < componets.size() && selectedComponet != -1) {
@@ -338,5 +341,13 @@ public class GuiDesigner extends GuiScreen implements Serializable {
         super.onGuiClosed();
     }
 
+
+    /**
+     * Returns true if this GUI should pause the game when it is displayed in single-player
+     */
+    public boolean doesGuiPauseGame()
+    {
+        return false;
+    }
 
 }

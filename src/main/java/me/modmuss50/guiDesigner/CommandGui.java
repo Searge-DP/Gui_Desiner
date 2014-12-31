@@ -30,7 +30,7 @@ public class CommandGui implements ICommand {
         } else {
             name = strings[0];
         }
-        Designer.network.sendToAll(new PacketOpen(name));
+        Designer.network.sendToAll(new PacketOpen(name, sender.getCommandSenderName()));
         sender.addChatMessage(new ChatComponentText("Opening the gui Designer!"));
     }
 
