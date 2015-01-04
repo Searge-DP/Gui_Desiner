@@ -25,7 +25,7 @@ public class CommandGui implements ICommand {
     @Override
     public void processCommand(ICommandSender sender, String[] strings) {
         String name;
-        if(strings.length == 0){
+        if (strings.length == 0) {
             name = "New gui";
         } else {
             name = strings[0];

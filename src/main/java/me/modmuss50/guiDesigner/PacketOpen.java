@@ -52,11 +52,11 @@ public class PacketOpen implements IMessage {
 
         @Override
         public IMessage onMessage(PacketOpen message, MessageContext ctx) {
-            if(ctx.side == Side.CLIENT){
-               if(Minecraft.getMinecraft().thePlayer.getCommandSenderName().equals(message.playerName)){
+            if (ctx.side == Side.CLIENT) {
+                if (Minecraft.getMinecraft().thePlayer.getCommandSenderName().equals(message.playerName)) {
                     Loader loader = new Loader(message.name);
                     GuiDesigner guiDesigner = loader.load();
-                    if(guiDesigner == null){
+                    if (guiDesigner == null) {
                         guiDesigner = new GuiDesigner();
                     }
                     guiDesigner.newName = message.name;

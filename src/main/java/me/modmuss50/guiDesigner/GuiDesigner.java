@@ -1,8 +1,9 @@
 package me.modmuss50.guiDesigner;
 
 import me.modmuss50.guiDesigner.componets.CompButton;
-import me.modmuss50.guiDesigner.componets.Componet;
-import me.modmuss50.guiDesigner.componets.TextLabel;
+import me.modmuss50.guiDesigner.componets.CompImage;
+import me.modmuss50.guiDesigner.componets.CompText;
+import me.modmuss50.guiDesigner.componets.Component;
 import me.modmuss50.guiDesigner.componets.mc.GuiTextField;
 import me.modmuss50.guiDesigner.saving.Saver;
 import net.minecraft.client.gui.GuiButton;
@@ -32,13 +33,16 @@ public class GuiDesigner extends GuiScreen implements Serializable {
      */
     public int ySize = 166;
     public int selectedComponet = -1;
-    ArrayList<Componet> componets = new ArrayList<Componet>();
-    Componet movingComponet = null;
+    public ArrayList<Component> components = new ArrayList<Component>();
+    Component movingComponent = null;
 
     GuiTextField nameFeild;
+    GuiTextField xSizeImage;
+    GuiTextField ySizeImage;
 
     GuiTextField textLabelBox;
     GuiTextField buttonLableBox;
+    GuiTextField imageLocationBox;
 
     GuiTextField guiTitleBox;
     String newName;
@@ -76,6 +80,7 @@ public class GuiDesigner extends GuiScreen implements Serializable {
         buttonList.add(new GuiButton(0, -ySize / 2 + 150, l + ySize - 24, 20, 20, "-"));
         buttonList.add(new GuiButton(1, (this.width - ySize / 2) - 278, this.height - 22, 20, 20, "ABC"));
         buttonList.add(new GuiButton(2, (this.width - ySize / 2) - 278 + 22, this.height - 22, 20, 20, "B"));
+        buttonList.add(new GuiButton(3, (this.width - ySize / 2) - 278 + 44, this.height - 22, 20, 20, "I"));
     }
 
     @Override
@@ -85,36 +90,36 @@ public class GuiDesigner extends GuiScreen implements Serializable {
         int l = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
         this.drawTexturedModalRect(-ySize / 2, l, 0, 0, this.xSize, this.ySize);
-        if(selectedComponet != -1)
-        this.drawTexturedModalRect(this.width - ySize / 2 - 50, l, 0, 0, this.xSize, this.ySize);
+        if (selectedComponet != -1)
+            this.drawTexturedModalRect(this.width - ySize / 2 - 50, l, 0, 0, this.xSize, this.ySize);
         {//Hot bar
             RenderManager.instance.renderEngine.bindTexture(hotBar);
             this.drawTexturedModalRect((this.width - ySize / 2) - 280, this.height - 25, 0, 0, 256, 256);
-            this.drawTexturedModalRect((this.width - ySize / 2) - 280,  -150, 0, 0, 256, 256);
+            this.drawTexturedModalRect((this.width - ySize / 2) - 280, -150, 0, 0, 256, 256);
         }
 
         this.fontRendererObj.drawString("Components", -ySize / 2 + 100, l + 5, Color.gray.getRGB());
-        if(selectedComponet != -1)
-        this.fontRendererObj.drawString("Settings", this.width - ySize / 2 + 10 - 15, l + 5, Color.gray.getRGB());
+        if (selectedComponet != -1)
+            this.fontRendererObj.drawString("Settings", this.width - ySize / 2 + 10 - 15, l + 5, Color.gray.getRGB());
 
         this.drawColourOnScreen(0, 0, 0, 255, -ySize / 2 + 90, l + 25, 75, 110, 0);
-        if(selectedComponet != -1)
-        this.drawColourOnScreen(0, 0, 0, 255, this.width - ySize / 2 - 45, l + 15, 125, 145, 0);
+        if (selectedComponet != -1)
+            this.drawColourOnScreen(0, 0, 0, 255, this.width - ySize / 2 - 45, l + 15, 125, 145, 0);
 
-        if (!componets.isEmpty() && selectedComponet < componets.size() && selectedComponet != -1) {
+        if (!components.isEmpty() && selectedComponet < components.size() && selectedComponet != -1) {
             this.drawColourOnScreen(50, 50, 50, 255, -ySize / 2 + 95, l + 29 + (selectedComponet * 10), 65, 10, 0);
-            Componet componet = componets.get(selectedComponet);
+            Component component = components.get(selectedComponet);
             this.fontRendererObj.drawString("Name: ", this.width - ySize / 2 + 10 - 50, l + 20, Color.white.getRGB());
             if (nameFeild == null) {
                 nameFeild = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 20, 70, 10);
             }
             if (nameFeild.getText().equals("ERROR")) {
-                nameFeild.setText(componets.get(selectedComponet).getName());
+                nameFeild.setText(components.get(selectedComponet).getName());
             }
             nameFeild.drawTextBox();
             nameFeild.setTextColor(Color.white.getRGB());
-            if (componet instanceof TextLabel) {
-                TextLabel textLabel = (TextLabel) componet;
+            if (component instanceof CompText) {
+                CompText textLabel = (CompText) component;
                 this.fontRendererObj.drawString("Text: ", this.width - ySize / 2 + 10 - 50, l + 35, Color.white.getRGB());
                 if (textLabelBox == null) {
                     textLabelBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
@@ -128,8 +133,8 @@ public class GuiDesigner extends GuiScreen implements Serializable {
             } else {
                 textLabelBox = null;
             }
-            if (componet instanceof CompButton) {
-                CompButton compButton = (CompButton) componet;
+            if (component instanceof CompButton) {
+                CompButton compButton = (CompButton) component;
                 this.fontRendererObj.drawString("Text: ", this.width - ySize / 2 + 10 - 50, l + 35, Color.white.getRGB());
                 if (buttonLableBox == null) {
                     buttonLableBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
@@ -143,28 +148,48 @@ public class GuiDesigner extends GuiScreen implements Serializable {
             } else {
                 buttonLableBox = null;
             }
+            if (component instanceof CompImage) {
+                CompImage compImage = (CompImage) component;
+                this.fontRendererObj.drawString("Texture: ", this.width - ySize / 2 + 10 - 50, l + 35, Color.white.getRGB());
+                if (imageLocationBox == null) {
+                    imageLocationBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                }
+
+                if (imageLocationBox.getText().equals("ERROR")) {
+                    imageLocationBox.setText(compImage.getImage());
+                }
+                imageLocationBox.drawTextBox();
+                imageLocationBox.setTextColor(Color.white.getRGB());
+            } else {
+                imageLocationBox = null;
+            }
         } else {
             nameFeild = null;
         }
 
         int i = 0;
-        for (Componet componet : componets) {
-            this.fontRendererObj.drawString(componet.getName(), -ySize / 2 + 95, l + 30 + (i * 10), Color.white.getRGB());
+        for (Component component : components) {
+            this.fontRendererObj.drawString(component.getName(), -ySize / 2 + 95, l + 30 + (i * 10), Color.white.getRGB());
             i++;
-            if (componet instanceof TextLabel) {
-                TextLabel textLabel = (TextLabel) componet;
+            if (component instanceof CompText) {
+                CompText textLabel = (CompText) component;
                 this.fontRendererObj.drawString(textLabel.getText(), k + textLabel.getX(), l + textLabel.getY(), Color.gray.getRGB());
             }
-            if (componet instanceof CompButton) {
-                CompButton button = (CompButton) componet;
+            if (component instanceof CompButton) {
+                CompButton button = (CompButton) component;
                 GuiButton button1 = new GuiButton(99, k + button.getX(), l + button.getY(), button.getWidth(), button.getHeight(), button.getText());
                 button1.drawButton(this.mc, k + button.getX(), l + button.getY());
             }
-            if (movingComponet == componet) {
-                this.drawColourOnScreen(50, 50, 50, 255, k + componet.getX(), l + componet.getY(), 1, componet.getHeight(), 0);
-                this.drawColourOnScreen(50, 50, 50, 255, k + componet.getX(), l + componet.getY(), componet.getWidth(), 1, 0);
-                this.drawColourOnScreen(50, 50, 50, 255, k + componet.getX() + componet.getWidth(), l + componet.getY(), 1, componet.getHeight(), 0);
-                this.drawColourOnScreen(50, 50, 50, 255, k + componet.getX(), l + componet.getY() + componet.getHeight(), componet.getWidth() + 1, 1, 0);
+            if (component instanceof CompImage) {
+                CompImage image = (CompImage) component;
+                RenderManager.instance.renderEngine.bindTexture(new ResourceLocation(image.getImage()));
+                this.drawTexturedModalRect(k + image.getX(), l + image.getY(), 0, 0, image.getWidth(), image.getHeight());
+            }
+            if (movingComponent == component) {
+                this.drawColourOnScreen(50, 50, 50, 255, k + component.getX(), l + component.getY(), 1, component.getHeight(), 0);
+                this.drawColourOnScreen(50, 50, 50, 255, k + component.getX(), l + component.getY(), component.getWidth(), 1, 0);
+                this.drawColourOnScreen(50, 50, 50, 255, k + component.getX() + component.getWidth(), l + component.getY(), 1, component.getHeight(), 0);
+                this.drawColourOnScreen(50, 50, 50, 255, k + component.getX(), l + component.getY() + component.getHeight(), component.getWidth() + 1, 1, 0);
             }
         }
 
@@ -173,9 +198,9 @@ public class GuiDesigner extends GuiScreen implements Serializable {
             this.drawColourOnScreen(90, 90, 90, 255, k + -ySize / 2 + 35, l + 25 + scrollerPos, 5, 10, 0);
         }
         mouse();
-        if(guiTitleBox == null){
-            guiTitleBox = new GuiTextField(this.fontRendererObj,(this.width - ySize / 2) - 240,  2, 100 , 10);
-            if(newName.length() == 0){
+        if (guiTitleBox == null) {
+            guiTitleBox = new GuiTextField(this.fontRendererObj, (this.width - ySize / 2) - 240, 2, 100, 10);
+            if (newName.length() == 0) {
                 guiTitleBox.setText("New Gui");
             } else {
                 guiTitleBox.setText(newName);
@@ -183,27 +208,30 @@ public class GuiDesigner extends GuiScreen implements Serializable {
 
         }
         guiTitleBox.drawTextBox();
-        drawString(this.fontRendererObj ,"Name:",(this.width - ySize / 2) - 275,  2, Color.white.getRGB());
+        drawString(this.fontRendererObj, "Name:", (this.width - ySize / 2) - 275, 2, Color.white.getRGB());
         super.drawScreen(par1, par2, par3);
     }
 
     @Override
     public void actionPerformed(GuiButton button) {
         super.actionPerformed(button);
-        if (button.id == 0 && !componets.isEmpty() && selectedComponet < componets.size() && selectedComponet != -1) {
-            componets.remove(selectedComponet);
+        if (button.id == 0 && !components.isEmpty() && selectedComponet < components.size() && selectedComponet != -1) {
+            components.remove(selectedComponet);
             selectedComponet = -1;
         }
         if (button.id == 1) {
-            componets.add(new TextLabel(10, 10, "Label " + Integer.toString(componets.size() + 1), "Text goes here", 10));
+            components.add(new CompText(10, 10, "Label " + Integer.toString(components.size() + 1), "Text goes here", 10));
         }
         if (button.id == 2) {
-            componets.add(new CompButton(10, 10, "Button " + Integer.toString(componets.size() + 1), "Text goes here", 20));
+            components.add(new CompButton(10, 10, "Button " + Integer.toString(components.size() + 1), "Text goes here", 20));
+        }
+        if (button.id == 3) {
+            components.add(new CompImage(50, 50, "Image " + Integer.toString(components.size() + 1), "guidesigner:textures/gui/icon.png", 107, 113));
         }
     }
 
     public boolean hasScrollBar() {
-        return componets.size() > 9;
+        return components.size() > 9;
     }
 
     @Override
@@ -225,14 +253,17 @@ public class GuiDesigner extends GuiScreen implements Serializable {
         if (buttonLableBox != null) {
             buttonLableBox.mouseClicked(x, y, par3);
         }
-        if(guiTitleBox != null){
+        if (guiTitleBox != null) {
             guiTitleBox.mouseClicked(x, y, par3);
+        }
+        if (imageLocationBox != null) {
+            imageLocationBox.mouseClicked(x, y, par3);
         }
         super.mouseClicked(x, y, par3);
     }
 
     public void setSelectedComponet(int num) {
-        if (componets.isEmpty()) {
+        if (components.isEmpty()) {
             return;
         }
         selectedComponet = num;
@@ -242,24 +273,30 @@ public class GuiDesigner extends GuiScreen implements Serializable {
             nameFeild = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 20, 70, 10);
         }
         nameFeild.setText("ERROR");
-        Componet componet;
-        if (selectedComponet <= componets.size()) {
-            if (componets.size() == 1) {
-                componet = componets.get(0);
+        Component component;
+        if (selectedComponet <= components.size()) {
+            if (components.size() == 1) {
+                component = components.get(0);
             } else {
-                componet = componets.get(selectedComponet);
+                component = components.get(selectedComponet);
             }
-            if (componet instanceof TextLabel) {
+            if (component instanceof CompText) {
                 if (textLabelBox == null) {
                     textLabelBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
                 }
                 textLabelBox.setText("ERROR");
             }
-            if (componet instanceof CompButton) {
+            if (component instanceof CompButton) {
                 if (buttonLableBox == null) {
                     buttonLableBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
                 }
                 buttonLableBox.setText("ERROR");
+            }
+            if (component instanceof CompImage) {
+                if (imageLocationBox == null) {
+                    imageLocationBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                }
+                imageLocationBox.setText("ERROR");
             }
         } else {
             selectedComponet = -1;
@@ -272,26 +309,26 @@ public class GuiDesigner extends GuiScreen implements Serializable {
         int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
-        if (movingComponet == null) {
-            for (Componet componet : componets) {
-                boolean flag = x >= k + componet.getX() && x < k + componet.getX() + componet.getWidth() && y >= l + componet.getY() && y < l + componet.getY() + componet.getHeight();
+        if (movingComponent == null) {
+            for (Component component : components) {
+                boolean flag = x >= k + component.getX() && x < k + component.getX() + component.getWidth() && y >= l + component.getY() && y < l + component.getY() + component.getHeight();
 
                 if (flag && Mouse.isButtonDown(0)) {
-                    movingComponet = componet;
+                    movingComponent = component;
                 }
             }
         }
-        if (movingComponet != null) {
-            setSelectedComponet(componets.indexOf(movingComponet));
+        if (movingComponent != null) {
+            setSelectedComponet(components.indexOf(movingComponent));
             //if(x - k > 0 && x - k < xSize - movingComponet.getWidth()){
-            movingComponet.setX(x - k - (movingComponet.getWidth() / 2));
+            movingComponent.setX(x - k - (movingComponent.getWidth() / 2));
             // }
             // if(y - l > 0 && y - l < ySize - movingComponet.getHeight()){
-            movingComponet.setY(y - l - (movingComponet.getHeight() / 2));
+            movingComponent.setY(y - l - (movingComponent.getHeight() / 2));
             // }
         }
-        if (!Mouse.isButtonDown(0) && movingComponet != null) {
-            movingComponet = null;
+        if (!Mouse.isButtonDown(0) && movingComponent != null) {
+            movingComponent = null;
         }
 
         if (hasScrollBar()) {
@@ -301,27 +338,34 @@ public class GuiDesigner extends GuiScreen implements Serializable {
 
     @Override
     protected void keyTyped(char par1, int par2) {
-        if(guiTitleBox != null && guiTitleBox.textboxKeyTyped(par1, par2)){
+        if (guiTitleBox != null && guiTitleBox.textboxKeyTyped(par1, par2)) {
 
         }
         if (nameFeild != null && nameFeild.textboxKeyTyped(par1, par2)) {
             if (nameFeild.getText().length() != 0) {
-                componets.get(selectedComponet).setName(nameFeild.getText());
+                components.get(selectedComponet).setName(nameFeild.getText());
             }
         } else if (textLabelBox != null && textLabelBox.textboxKeyTyped(par1, par2)) {
             if (textLabelBox.getText().length() != 0) {
-                Componet componet = componets.get(selectedComponet);
-                if (componet instanceof TextLabel) {
-                    ((TextLabel) componet).setText(textLabelBox.getText());
-                    componet.setWidth(textLabelBox.getText().length() * 5);
+                Component component = components.get(selectedComponet);
+                if (component instanceof CompText) {
+                    ((CompText) component).setText(textLabelBox.getText());
+                    component.setWidth(textLabelBox.getText().length() * 5);
                 }
             }
         } else if (buttonLableBox != null && buttonLableBox.textboxKeyTyped(par1, par2)) {
             if (buttonLableBox.getText().length() != 0) {
-                Componet componet = componets.get(selectedComponet);
-                if (componet instanceof CompButton) {
-                    ((CompButton) componet).setText(buttonLableBox.getText());
-                    componet.setWidth(buttonLableBox.getText().length() * 6);
+                Component component = components.get(selectedComponet);
+                if (component instanceof CompButton) {
+                    ((CompButton) component).setText(buttonLableBox.getText());
+                    component.setWidth(buttonLableBox.getText().length() * 6);
+                }
+            }
+        } else if (imageLocationBox != null && imageLocationBox.textboxKeyTyped(par1, par2)) {
+            if (imageLocationBox.getText().length() != 0) {
+                Component component = components.get(selectedComponet);
+                if (component instanceof CompImage) {
+                    ((CompImage) component).setImage(buttonLableBox.getText());
                 }
             }
         } else {
@@ -345,8 +389,7 @@ public class GuiDesigner extends GuiScreen implements Serializable {
     /**
      * Returns true if this GUI should pause the game when it is displayed in single-player
      */
-    public boolean doesGuiPauseGame()
-    {
+    public boolean doesGuiPauseGame() {
         return false;
     }
 

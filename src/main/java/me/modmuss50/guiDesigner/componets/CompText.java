@@ -1,14 +1,14 @@
 package me.modmuss50.guiDesigner.componets;
 
-public class CompTextbox extends Component {
+public class CompText extends Component {
     String text;
 
-    public CompTextbox(int x, int y, String name, String text, int height, int lenght) {
-        super(x, y, name, height, lenght);
+    public CompText(int x, int y, String name, String text, int height) {
+        super(x, y, name, height, text.length() * 5);
         this.text = text;
     }
 
-    public CompTextbox() {
+    public CompText() {
         super(0, 0, "", 0, 0);
     }
 
@@ -35,4 +35,5 @@ public class CompTextbox extends Component {
         setHeight(Integer.parseInt(parts[4]));
         setWidth(Integer.parseInt(parts[5]));
     }
+
 }

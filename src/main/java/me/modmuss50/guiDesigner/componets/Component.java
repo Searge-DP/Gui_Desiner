@@ -2,10 +2,7 @@ package me.modmuss50.guiDesigner.componets;
 
 import java.io.Serializable;
 
-/**
- * Created by Mark on 30/12/2014.
- */
-public class Componet implements Serializable {
+public class Component implements Serializable {
 
     int x;
 
@@ -16,7 +13,7 @@ public class Componet implements Serializable {
 
     String name;
 
-    public Componet(int x, int y, String name, int height, int width) {
+    public Component(int x, int y, String name, int height, int width) {
         this.x = x;
         this.y = y;
         this.name = name;
@@ -64,4 +61,15 @@ public class Componet implements Serializable {
     public void setWidth(int width) {
         this.width = width;
     }
+
+    public String getSaveLine() {
+        return "";
+    }
+
+    ;
+
+    public void loadFromString(String string) {
+    }
+
+    ;
 }
