@@ -55,7 +55,12 @@ public class PacketOpen implements IMessage {
             if (ctx.side == Side.CLIENT) {
                 if (Minecraft.getMinecraft().thePlayer.getCommandSenderName().equals(message.playerName)) {
                     Loader loader = new Loader(message.name);
-                    GuiDesigner guiDesigner = loader.load();
+                    GuiDesigner guiDesigner = null;
+                    try{
+                        guiDesigner = loader.load();
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
                     if (guiDesigner == null) {
                         guiDesigner = new GuiDesigner();
                     }
