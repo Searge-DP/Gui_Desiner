@@ -5,6 +5,7 @@ import me.modmuss50.guiDesigner.componets.CompImage;
 import me.modmuss50.guiDesigner.componets.CompText;
 import me.modmuss50.guiDesigner.componets.Component;
 import me.modmuss50.guiDesigner.componets.mc.GuiTextField;
+import me.modmuss50.guiDesigner.saving.Loader;
 import me.modmuss50.guiDesigner.saving.Saver;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -428,4 +429,10 @@ public class GuiDesigner extends GuiScreen implements Serializable {
         return false;
     }
 
+
+    public GuiDesigner(String name) {
+        newName = name;
+        Loader loader = new Loader(newName);
+        loader.load(this);
+    }
 }

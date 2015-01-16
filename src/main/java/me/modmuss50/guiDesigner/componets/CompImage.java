@@ -8,8 +8,9 @@ public class CompImage extends Component {
         this.image = image;
     }
 
-    public CompImage() {
-        super(0, 0, "", 0, 0);
+    public CompImage(String line){
+        super(line);
+        this.loadFromString(line);
     }
 
     public String getImage() {
@@ -22,13 +23,13 @@ public class CompImage extends Component {
 
     @Override
     public String getSaveLine() {
-        return x + ":" + y + ":" + name + ":" + image + ":" + height + ":" + width;
+        return x + "&" + y + "&" + name + "&" + image + "&" + height + "&" + width;
     }
 
     @Override
     public void loadFromString(String string) {
         System.out.println(string);
-        String[] parts = string.split(":");
+        String[] parts = string.split("&");
         setX(Integer.parseInt(parts[0]));
         setY(Integer.parseInt(parts[1]));
         setName(parts[2]);

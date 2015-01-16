@@ -6,7 +6,6 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
-import me.modmuss50.guiDesigner.saving.Loader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 
@@ -54,22 +53,9 @@ public class PacketOpen implements IMessage {
         public IMessage onMessage(PacketOpen message, MessageContext ctx) {
             if (ctx.side == Side.CLIENT) {
                 if (Minecraft.getMinecraft().thePlayer.getCommandSenderName().equals(message.playerName)) {
-                    Loader loader = new Loader(message.name);
-                    GuiDesigner guiDesigner = null;
-                    try{
-                        guiDesigner = loader.load();
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    if (guiDesigner == null) {
-                        guiDesigner = new GuiDesigner();
-                    }
-                    guiDesigner.newName = message.name;
-                    FMLClientHandler.instance().showGuiScreen(guiDesigner);
+                    FMLClientHandler.instance().showGuiScreen(new GuiDesigner(message.name));
                 }
-
             }
-
             return null;
         }
     }

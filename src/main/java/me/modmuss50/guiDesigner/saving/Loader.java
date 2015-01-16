@@ -22,7 +22,7 @@ public class Loader {
         file = new File(folder, name + ".gui");
     }
 
-    public GuiDesigner load() {
+    public GuiDesigner load(GuiDesigner guiDesigner) {
         if (file.getName().equals("New gui")) {
             return null;
         }
@@ -32,19 +32,19 @@ public class Loader {
         if (!file.exists()) {
             return null;
         }
-        if (true == true) {
             try {
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-                GuiDesigner gui = new GuiDesigner();
+
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     String[] strings = line.split(":");
                     if (strings[0].length() != 0) {
-                        Component component = CompRegistry.getComponetFromClassName(strings[0]);
-                        //if(component == null){
                         String newLine = line.replace(strings[0] + ":", "");
+                        Component component = CompRegistry.getComponetFromClassName(strings[0], newLine);
+                        //if(component == null){
+
                         component.loadFromString(newLine);
-                        gui.components.add(component);
+                        guiDesigner.components.add(component);
                         //}
                     }
                 }
@@ -55,7 +55,6 @@ public class Loader {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
 
         try {
             FileInputStream inputStream = new FileInputStream(file);

@@ -8,6 +8,11 @@ public class CompButton extends Component {
         this.text = text;
     }
 
+    public CompButton(String line){
+        super(line);
+        this.loadFromString(line);
+    }
+
     public CompButton() {
         super(0, 0, "", 0, 0);
     }

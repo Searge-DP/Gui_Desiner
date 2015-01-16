@@ -21,6 +21,10 @@ public class Component implements Serializable {
         this.width = width;
     }
 
+    public Component(String line){
+        this.loadFromString(line);
+    }
+
 
     public int getX() {
         return x;

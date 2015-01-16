@@ -8,8 +8,9 @@ public class CompText extends Component {
         this.text = text;
     }
 
-    public CompText() {
-        super(0, 0, "", 0, 0);
+    public CompText(String line){
+        super(line);
+        this.loadFromString(line);
     }
 
     public String getText() {
