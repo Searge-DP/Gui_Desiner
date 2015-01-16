@@ -24,5 +24,6 @@ public class Designer {
     @Mod.EventHandler
     public void serverInit(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandGui());
+        event.registerServerCommand(new CommandOpenTestGUi());
     }
 }

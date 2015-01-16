@@ -1,8 +1,6 @@
 package me.modmuss50.guiDesigner;
 
-import me.modmuss50.guiDesigner.componets.CompButton;
-import me.modmuss50.guiDesigner.componets.CompImage;
-import me.modmuss50.guiDesigner.componets.CompText;
+import me.modmuss50.guiDesigner.componets.*;
 import me.modmuss50.guiDesigner.componets.Component;
 import me.modmuss50.guiDesigner.componets.mc.GuiTextField;
 import me.modmuss50.guiDesigner.saving.Loader;
@@ -16,10 +14,9 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GuiDesigner extends GuiScreen implements Serializable {
+public class GuiDesigner extends GuiScreen {
 
     private static final ResourceLocation baseTexture = new ResourceLocation("guidesigner:textures/gui/base.png");
     private static final ResourceLocation baseTextureSmall = new ResourceLocation("guidesigner:textures/gui/baseSmall.png");
@@ -82,6 +79,7 @@ public class GuiDesigner extends GuiScreen implements Serializable {
         buttonList.add(new GuiButton(1, (this.width - ySize / 2) - 278, this.height - 22, 20, 20, "ABC"));
         buttonList.add(new GuiButton(2, (this.width - ySize / 2) - 278 + 22, this.height - 22, 20, 20, "B"));
         buttonList.add(new GuiButton(3, (this.width - ySize / 2) - 278 + 44, this.height - 22, 20, 20, "I"));
+        buttonList.add(new GuiButton(4, (this.width - ySize / 2) - 278 + 66, this.height - 22, 20, 20, "A |"));
     }
 
     @Override
@@ -256,6 +254,9 @@ public class GuiDesigner extends GuiScreen implements Serializable {
         }
         if (button.id == 3) {
             components.add(new CompImage(50, 50, "Image " + Integer.toString(components.size() + 1), "guidesigner:textures/gui/icon.png", 107, 113));
+        }
+        if (button.id == 4) {
+            components.add(new CompTextbox(50, 50, "Textbox " + Integer.toString(components.size() + 1), "text", 107, 113));
         }
     }
 
