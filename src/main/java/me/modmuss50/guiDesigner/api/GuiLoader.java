@@ -12,6 +12,11 @@ import java.util.ArrayList;
 
 /**
  * You can use this file in your mod to load the guis. You can rename it, hack it.
+ *
+ *
+ * This file is messy! I know it needs work but i am short of free time to work on it
+ *
+ * This file is massive because it needs to be standalone and not need the main mod or mmc
  */
 public class GuiLoader extends GuiScreen {
 
