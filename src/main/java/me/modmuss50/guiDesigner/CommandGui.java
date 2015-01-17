@@ -2,46 +2,51 @@ package me.modmuss50.guiDesigner;
 
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CommandGui implements ICommand {
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "gui";
     }
+
 
     @Override
     public String getCommandUsage(ICommandSender p_71518_1_) {
         return "Gui";
     }
 
+
     @Override
-    public List getCommandAliases() {
+    public boolean canCommandSenderUse(ICommandSender sender) {
+        return true;
+    }
+
+    @Override
+    public List addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
         return null;
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] strings) {
+    public List getAliases() {
+        ArrayList<String> list = new ArrayList<String>();
+        return list;
+    }
+
+    @Override
+    public void execute(ICommandSender sender, String[] strings) {
         String name;
         if (strings.length == 0) {
             name = "New gui";
         } else {
             name = strings[0];
         }
-        Designer.network.sendToAll(new PacketOpen(name, sender.getCommandSenderName()));
+        Designer.network.sendToAll(new PacketOpen(name, sender.getName()));
         sender.addChatMessage(new ChatComponentText("Opening the gui Designer!"));
-    }
-
-    @Override
-    public boolean canCommandSenderUseCommand(ICommandSender p_71519_1_) {
-        return true;
-    }
-
-    @Override
-    public List addTabCompletionOptions(ICommandSender p_71516_1_, String[] p_71516_2_) {
-        return null;
     }
 
     @Override

@@ -1,15 +1,14 @@
 package me.modmuss50.guiDesigner;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import cpw.mods.fml.relauncher.Side;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
-
-import java.io.IOException;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketOpen implements IMessage {
 
@@ -31,7 +30,7 @@ public class PacketOpen implements IMessage {
         try {
             name = packetBuffer.readStringFromBuffer(999);
             playerName = packetBuffer.readStringFromBuffer(999);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -40,9 +39,9 @@ public class PacketOpen implements IMessage {
     public void toBytes(ByteBuf buf) {
         PacketBuffer packetBuffer = new PacketBuffer(buf);
         try {
-            packetBuffer.writeStringToBuffer(name);
-            packetBuffer.writeStringToBuffer(playerName);
-        } catch (IOException e) {
+            packetBuffer.writeString(name);
+            packetBuffer.writeString(playerName);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -52,7 +51,7 @@ public class PacketOpen implements IMessage {
         @Override
         public IMessage onMessage(PacketOpen message, MessageContext ctx) {
             if (ctx.side == Side.CLIENT) {
-                if (Minecraft.getMinecraft().thePlayer.getCommandSenderName().equals(message.playerName)) {
+                if (Minecraft.getMinecraft().thePlayer.getName().equals(message.playerName)) {
                     FMLClientHandler.instance().showGuiScreen(new GuiDesigner(message.name));
                 }
             }
