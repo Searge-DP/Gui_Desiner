@@ -2,18 +2,19 @@ package me.modmuss50.guiDesigner;
 
 import me.modmuss50.guiDesigner.componets.*;
 import me.modmuss50.guiDesigner.componets.Component;
-import me.modmuss50.guiDesigner.componets.mc.GuiTextField;
 import me.modmuss50.guiDesigner.saving.Loader;
 import me.modmuss50.guiDesigner.saving.Saver;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class GuiDesigner extends GuiScreen {
@@ -59,13 +60,14 @@ public class GuiDesigner extends GuiScreen {
             return;
         }
         GL11.glDisable(GL11.GL_TEXTURE_2D);
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.setColorRGBA(r, g, b, alpha);
-        tessellator.addVertex(posX, posY + height, zLevel);
-        tessellator.addVertex(posX + width, posY + height, zLevel);
-        tessellator.addVertex(posX + width, posY, zLevel);
-        tessellator.addVertex(posX, posY, zLevel);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+        worldRenderer.startDrawingQuads();
+        worldRenderer.setColorRGBA(r, g, b, alpha);
+        worldRenderer.addVertex(posX, posY + height, zLevel);
+        worldRenderer.addVertex(posX + width, posY + height, zLevel);
+        worldRenderer.addVertex(posX + width, posY, zLevel);
+        worldRenderer.addVertex(posX, posY, zLevel);
         tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
     }
@@ -84,7 +86,7 @@ public class GuiDesigner extends GuiScreen {
 
     @Override
     public void drawScreen(int par1, int par2, float par3) {
-        RenderManager.instance.renderEngine.bindTexture(baseTexture);
+        this.mc.getTextureManager().bindTexture(baseTexture);
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
@@ -92,7 +94,7 @@ public class GuiDesigner extends GuiScreen {
         if (selectedComponet != -1)
             this.drawTexturedModalRect(this.width - ySize / 2 - 50, l, 0, 0, this.xSize, this.ySize);
         {//Hot bar
-            RenderManager.instance.renderEngine.bindTexture(hotBar);
+            this.mc.getTextureManager().bindTexture(hotBar);
             this.drawTexturedModalRect((this.width - ySize / 2) - 280, this.height - 25, 0, 0, 256, 256);
             this.drawTexturedModalRect((this.width - ySize / 2) - 280, -150, 0, 0, 256, 256);
         }
@@ -110,7 +112,7 @@ public class GuiDesigner extends GuiScreen {
             Component component = components.get(selectedComponet);
             this.fontRendererObj.drawString("Name: ", this.width - ySize / 2 + 10 - 50, l + 20, Color.white.getRGB());
             if (nameFeild == null) {
-                nameFeild = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 20, 70, 10);
+                nameFeild = new GuiTextField(0, this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 20, 70, 10);
             }
             if (nameFeild.getText().equals("ERROR")) {
                 nameFeild.setText(components.get(selectedComponet).getName());
@@ -121,7 +123,7 @@ public class GuiDesigner extends GuiScreen {
                 CompText textLabel = (CompText) component;
                 this.fontRendererObj.drawString("Text: ", this.width - ySize / 2 + 10 - 50, l + 35, Color.white.getRGB());
                 if (textLabelBox == null) {
-                    textLabelBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                    textLabelBox = new GuiTextField(0, this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
                 }
                 if (textLabelBox.getText().equals("ERROR")) {
                     textLabelBox.setText(textLabel.getText());
@@ -135,7 +137,7 @@ public class GuiDesigner extends GuiScreen {
                 CompButton compButton = (CompButton) component;
                 this.fontRendererObj.drawString("Text: ", this.width - ySize / 2 + 10 - 50, l + 35, Color.white.getRGB());
                 if (buttonLableBox == null) {
-                    buttonLableBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                    buttonLableBox = new GuiTextField(0, this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
                 }
 
                 if (buttonLableBox.getText().equals("ERROR")) {
@@ -150,7 +152,7 @@ public class GuiDesigner extends GuiScreen {
                 CompImage compImage = (CompImage) component;
                 this.fontRendererObj.drawString("Texture: ", this.width - ySize / 2 + 10 - 50, l + 35, Color.white.getRGB());
                 if (imageLocationBox == null) {
-                    imageLocationBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                    imageLocationBox = new GuiTextField(0, this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
                 }
 
                 if (imageLocationBox.getText().equals("ERROR")) {
@@ -177,7 +179,7 @@ public class GuiDesigner extends GuiScreen {
             }
             if (component instanceof CompImage) {
                 CompImage image = (CompImage) component;
-                RenderManager.instance.renderEngine.bindTexture(new ResourceLocation(image.getImage()));
+                this.mc.getTextureManager().bindTexture(new ResourceLocation(image.getImage()));
                 this.drawTexturedModalRect(k + image.getX(), l + image.getY(), 0, 0, image.getWidth(), image.getHeight());
             }
             //this draws the selection box when moving an item
@@ -207,7 +209,7 @@ public class GuiDesigner extends GuiScreen {
 
         mouse();
         if (guiTitleBox == null) {
-            guiTitleBox = new GuiTextField(this.fontRendererObj, (this.width - ySize / 2) - 240, 2, 100, 10);
+            guiTitleBox = new GuiTextField(0, this.fontRendererObj, (this.width - ySize / 2) - 240, 2, 100, 10);
             if (newName.length() == 0) {
                 guiTitleBox.setText("New Gui");
             } else {
@@ -221,7 +223,7 @@ public class GuiDesigner extends GuiScreen {
     }
 
     @Override
-    public void handleMouseInput() {
+    public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         if(hasScrollBar()){
             int scrolled = Mouse.getEventDWheel();
@@ -240,7 +242,7 @@ public class GuiDesigner extends GuiScreen {
     }
 
     @Override
-    public void actionPerformed(GuiButton button) {
+    public void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
         if (button.id == 0 && !components.isEmpty() && selectedComponet < components.size() && selectedComponet != -1) {
             components.remove(selectedComponet);
@@ -265,7 +267,7 @@ public class GuiDesigner extends GuiScreen {
     }
 
     @Override
-    public void mouseClicked(int x, int y, int par3) {
+    public void mouseClicked(int x, int y, int par3) throws IOException {
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
         if (x > -ySize / 2 + 90 && x < -ySize / 2 + 90 + 70) {
@@ -300,7 +302,7 @@ public class GuiDesigner extends GuiScreen {
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
         if (nameFeild == null) {
-            nameFeild = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 20, 70, 10);
+            nameFeild = new GuiTextField(0, this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 20, 70, 10);
         }
         nameFeild.setText("ERROR");
         Component component;
@@ -319,19 +321,19 @@ public class GuiDesigner extends GuiScreen {
             }
             if (component instanceof CompText) {
                 if (textLabelBox == null) {
-                    textLabelBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                    textLabelBox = new GuiTextField(0, this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
                 }
                 textLabelBox.setText("ERROR");
             }
             if (component instanceof CompButton) {
                 if (buttonLableBox == null) {
-                    buttonLableBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                    buttonLableBox = new GuiTextField(0, this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
                 }
                 buttonLableBox.setText("ERROR");
             }
             if (component instanceof CompImage) {
                 if (imageLocationBox == null) {
-                    imageLocationBox = new GuiTextField(this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
+                    imageLocationBox = new GuiTextField(0, this.fontRendererObj, this.width - ySize / 2 + 40 - 50, l + 35, 70, 10);
                 }
                 imageLocationBox.setText("ERROR");
             }
@@ -374,7 +376,7 @@ public class GuiDesigner extends GuiScreen {
     }
 
     @Override
-    protected void keyTyped(char par1, int par2) {
+    protected void keyTyped(char par1, int par2) throws IOException {
         if (guiTitleBox != null && guiTitleBox.textboxKeyTyped(par1, par2)) {
 
         }

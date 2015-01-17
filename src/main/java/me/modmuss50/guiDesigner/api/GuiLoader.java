@@ -1,10 +1,9 @@
 package me.modmuss50.guiDesigner.api;
 
-import cpw.mods.fml.relauncher.FMLInjectionData;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.FMLInjectionData;
 
 import java.awt.*;
 import java.io.*;
@@ -52,7 +51,7 @@ public class GuiLoader extends GuiScreen {
 
 	@Override
 	public void drawScreen(int par1, int par2, float par3) {
-		RenderManager.instance.renderEngine.bindTexture(baseTexture);
+		this.mc.getTextureManager().bindTexture(baseTexture);
 		int k = (this.width - this.xSize) / 2;
 		int l = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
@@ -64,7 +63,7 @@ public class GuiLoader extends GuiScreen {
 			}
 			if (component instanceof CompImage) {
 				CompImage image = (CompImage) component;
-				RenderManager.instance.renderEngine.bindTexture(new ResourceLocation(image.getImage()));
+				this.mc.getTextureManager().bindTexture(new ResourceLocation(image.getImage()));
 				this.drawTexturedModalRect(k + image.getX(), l + image.getY(), 0, 0, image.getWidth(), image.getHeight());
 			}
 		}
@@ -72,14 +71,14 @@ public class GuiLoader extends GuiScreen {
 	}
 
 	@Override
-	public void handleMouseInput() {
+	public void handleMouseInput() throws IOException {
 		super.handleMouseInput();
 
 
 	}
 
 	@Override
-	public void actionPerformed(GuiButton button) {
+	public void actionPerformed(GuiButton button) throws IOException {
 		super.actionPerformed(button);
 		for(CustButton custButton : buttons){
 			if(custButton.getButton() == button){
@@ -94,13 +93,13 @@ public class GuiLoader extends GuiScreen {
 	}
 
 	@Override
-	public void mouseClicked(int x, int y, int par3) {
+	public void mouseClicked(int x, int y, int par3) throws IOException {
 		super.mouseClicked(x, y, par3);
 	}
 
 
 	@Override
-	protected void keyTyped(char par1, int par2) {
+	protected void keyTyped(char par1, int par2) throws IOException {
 		super.keyTyped(par1, par2);
 	}
 
