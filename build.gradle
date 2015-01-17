@@ -19,7 +19,7 @@ buildscript {
 apply plugin: 'forge'
 
 minecraft {
-    version = "1.7.10-10.13.2.1272"
+    version = "1.8-11.14.0.1281-1.8"
     replace "@MODVERSION@", project.version
     replaceIn "Designer.java"
 }
